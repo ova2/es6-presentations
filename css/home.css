@@ -326,6 +326,21 @@ footer a:hover {
   color: #444;
 }
 
+a:hover {
+    text-decoration: underline;
+}
+
+a.goto {
+    padding-left: 15px;    
+}
+
+/* Lets add an arrow after each link */
+a.goto:before {
+    position: absolute; /* Prevent underline of arrow */
+    margin-left: -15px; /* Add a little space between text and arrow */
+    content: "\00bb"; /* Unicode hex for &raquo; */
+}
+
 /* MISC */
 .clearfix:after {
   display: block;
