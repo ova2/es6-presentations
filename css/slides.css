@@ -1,0 +1,38 @@
+body {
+    font-family: 'Droid Serif';
+}
+
+h1, h2, h3 {
+    font-family: 'Yanone Kaffeesatz';
+    font-weight: 400;
+    margin-bottom: 0;
+    margin-top: 10px;
+}
+
+h1 {
+    font-size: 3.5em;
+}
+
+h2 {
+    font-size: 3em;
+}
+
+h3 {
+    font-size: 1.6em;
+}
+
+pre {
+    border-left: 0.4em solid #d7d7d7;
+    padding: 0.5em 1em 0.5em 1em !important;
+}
+
+a {
+    color: #F92672;
+    text-decoration: none;
+}
+
+.title {
+    color: white;
+    margin-left: -3em;
+    margin-top: -5em;
+}

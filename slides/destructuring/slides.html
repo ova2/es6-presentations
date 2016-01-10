@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Destructuring Assignment</title>
+    <meta charset="utf-8">
+    <style>
+        @import url(//fonts.googleapis.com/css?family=Droid+Serif);
+        @import url(//fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+    </style>
+    <link rel="stylesheet" type="text/css" href="../../css/slides.css">
+</head>
+<body>
+<textarea id="source">
+
+class: left, middle
+background-image: url(../../images/master-folie.png)
+
+.title[
+## ECMAScript 6 (ES2015)
+## Destructuring Assignment
+<br/>    
+### Oleg Varaksin, 13.01.2015
+]
+    
+---
+    
+# Tooling.
+
+---
+    
+# Destructuring objects.
+
+```js
+var foo = {bar: 'pony', baz: 3};
+var {bar: a, baz: b} = foo;
+
+console.log(a)
+// 'pony'
+console.log(b)
+// 3
+```
+    
+---
+    
+# Destructuring objects, shorthand notation.
+    
+    
+</textarea>
+<script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"></script>
+<script>
+    var slideshow = remark.create({
+        highlightLanguage: 'javascript', highlightStyle: 'idea', navigation: {scroll: false}
+    });
+</script>
+</body>
+</html>
