@@ -64,6 +64,7 @@ multiple properties at the same time, the object pattern lets us extract multipl
 ```js
 var {first: a, last: b} = obj;
 // a = 'Jane', b = 'Leo'
+
 var [x, y] = ['Jane', 'Leo'];
 // x = 'Jane', y = 'Leo'
 ```
@@ -149,7 +150,7 @@ console.log("A is " + a + ", B is " + b + ", C is " + c);
 // A is 1, B is 2, C is 3
 ```
 
-The *rest* operator lets you extract the remaining elements of an array into an array.
+The `rest` operator lets you extract the remaining elements of an array into an array.
 You can only use this operator as the last part inside an array.
     
 ```js
@@ -157,7 +158,7 @@ var [x, ...y] = ['a', 'b', 'c'];
 // x = 'a', y = ['b', 'c']
 ``` 
 
-Attention: The same syntax (...) is used by the *spread* operator!
+Attention: The same syntax (...) is used by the `spread` operator!
     
 ---
     
@@ -222,7 +223,7 @@ var {one: a, two: b, values: [c, , e]} = mixed();
     
 # If a part has no match (1/3).
     
-If the value of a destructuring assignment isn't match, it evaluates to *undefined*.
+If the value of a destructuring assignment isn't match, it evaluates to `undefined`.
 Just like when accessing not defined properties on an object with the dot or bracket notation.
     
 ```js
@@ -260,7 +261,7 @@ var {
 
 --
     
-__Question__: What are the values of variables *x* and *y*?
+__Question__: What are the values of variables `x` and `y`?
     
 --
     
@@ -275,7 +276,7 @@ console.log(y);         // 'c'
     
 # If a part has no match (3/3).
     
-If you’re trying to access a deeply nested property of a parent that doesn’t exist, then you’ll get an exception.
+If you're trying to access a deeply nested property of a parent that doesn't exist, then you'll get an exception.
     
 ```js
 var {foo: {bar}} = {baz: 'something'};
@@ -296,25 +297,136 @@ For more complex example check the FF or Chrome console of this [ES6 Fiddle](htt
     
 ---
     
-# Default values (1/2).
+# Default values (1/3).
+    
+If a part (an object property or an array element) has no match in the source, it is matched against:
+    
+- its *default value* (if specified)
+- *undefined* (otherwise)
+    
+Providing a default value is optional. Example with array:
+    
+```js
+var [x = 3, y] = [];
+// x = 3; y = undefined
+```
+__Explanation__: The element at index 0 has no match on the right-hand side. Therefore, destructuring continues
+`y` matching `x` against 3, which leads to `x` being set to 3.
+    
+Example with object:
+
+```js
+var {foo: x = 3, bar: y} = {};
+// x = 3; y = undefined
+```
     
 ---
     
-# Default values (2/2).
+# Default values (2/3).
+
+`undefined` triggers default values. Default values are also used if a part does have a match and that match is `undefined`.
+    
+```js
+var {prop: y = 2} = {prop: undefined};
+// y = 2
+```    
+
+Default values are computed when they are needed (on demand). This
+
+```js
+var {prop: y = someFunc()} = someValue;
+```
+
+is equivalent to
+    
+```js
+var y;
+if (someValue.prop === undefined) {
+    y = someFunc();
+} else {
+    y = someValue.prop;
+}
+```
+
+---
+    
+# Default values (3/3).
+
+__Quiz__: Quess the output of this fiddle: [ES6 Fiddle](http://www.es6fiddle.net/ijbnc8nk/)
+    
+So far we have only seen default values for variables, but you can also associate them with object itself:
+    
+```js
+var [{prop: x} = {}] = [];
+```
+    
+What does this mean? The element at index 0 has no match, which is why destructuring continues with:
+    
+```js
+var {prop: x} = {};
+// x = undefined
+```
+    
+Another example with complex default values:
+    
+```js
+var [{prop: x} = {prop: 123}] = [];
+// Destructuring continues as follows:
+var {prop: x} = {prop: 123};
+// x = 123
+```
     
 ---
     
 # Destructuring in a function's parameter list.
+
+You can also use destructuring in a function's parameter list.
+    
+```js
+function greet({name: greeting = 'she', age}) {
+  console.log(`${greeting} is ${age} years old.`)
+}
+    
+greet({name: 'nico', age: 27});
+// nico is 27 years old
+    
+greet({age: 24});
+// she is 24 years old
+```
+ 
+Next advanced example:
+    
+```js
+var ajax = function({url = 'sbb.ch', port: p = 80}, ...data) {
+  console.log("Url:", url, "Port:", p, "Rest:", data);
+};
+    
+ajax({url: "localhost"}, "more", "data", "hello");
+// => Url: localhost Port: 80 Rest: ['more', 'data', 'hello']
+```
     
 ---
    
 # Destructuring with computed property names.
+
+Computed property names are another object literal feature that also works for destructuring.
+You can specify the name of a property via an expression, if you put it in square brackets.
+    
+```js
+var KEY = 'z';
+var {[KEY]: foo} = {z: 'bar'};
+
+console.log(foo);
+// 'bar'
+```
+
+[Reference to computed property names](http://droidscript.org/javascript/Operators/Object_initializer.html)
     
 ---
     
 # Good to know.
     
-If we try to omit *var*, *let* or *const*, it will throw an error, because block code can't be a destructuring assignment.
+If we try to omit `var`, `let` or `const`, it will throw an error, because block code can't be a destructuring assignment.
     
 ```js
 let point = {
@@ -339,15 +451,154 @@ console.log(a);
     
 ---
     
-# Use cases (1/3).
+# Use cases (1/6).
+    
+Swap variables without the need for an auxiliary variable.
+    
+ES5
+    
+```js
+var left = 10;
+var right = 20;
+    
+var aux = right;
+right = left;
+left = aux;
+```
+    
+ES6
+    
+```js
+var left = 10;
+var right = 20;
+    
+[left, right] = [right, left];
+```
 
 ---
     
-# Use cases (2/3).
+# Use cases (2/6).
+    
+You can also destructure in a `for-of` loop (ES6 loop):
+    
+```js
+let arr = [{name: 'Jane', age: 41}, {name: 'John', age: 40}];
+    
+for (var {name, age} of arr) {
+    console.log(name, age);
+}
+    
+// Jane 41
+// John 40
+```
+    
+It works with all `iterable` (ES6). E.g. with `String` and `Set`:
+
+```js    
+var [x, y, z] = 'abc';
+// x = 'a', y = 'b', z = 'c'
+    
+var [x, y] = new Set(['a', 'b']);
+// x = 'a', y = 'b’
+```
+    
+[ES6 Fiddle to a complex example](http://www.es6fiddle.net/ijbprm0q/)
+
+---
+    
+# Use cases (3/6).
+
+A great use case for destructuring are things like regular expressions.
+    
+```js
+var date = '2999-12-31';
+var [all, year, month, day] =
+    /^(\d\d\d\d)-(\d\d)-(\d\d)$/.exec(date);
+    
+// year = 2999, month = 12, day = 31
+```
+    
+Better variant (because `exec()` returns `null` if the regular expression doesn't match):
+    
+```js
+var date = '...';   // some string
+var [, year, month, day] =
+    /^(\d\d\d\d)-(\d\d)-(\d\d)$/.exec(date) || [];
+```
+    
+[Fiddle of the ES5 variant](http://www.es6fiddle.net/ijbrxsc8/)
     
 ---
     
-# Use cases (3/3).
+# Use cases (4/6).
+    
+An example for parsing an URL.
+    
+```js
+function getUrlParts (url) {
+  var regex = /^(https?):\/\/(sbb\.ch)(\/wcms\/([a-z0-9-]+))$/;
+  return regex.exec(url);
+}
+    
+var parts = getUrlParts('http://sbb.ch/wcms/header');
+var [, protocol, host, pathname, ending] = parts;
+    
+console.log(protocol);
+// 'http'
+console.log(host);
+// 'sbb.ch'
+console.log(pathname);
+// '/wcms/header'
+console.log(ending);
+// 'header'
+```  
+    
+---
+    
+# Use cases (5/6).
+    
+Default values for options passed as function's parameter.
+    
+ES5
+    
+```js
+function drawES5Chart(options) {
+  options = options === undefined ? {} : options;
+  
+  var size = options.size === undefined ?
+             'big' : options.size;
+  var cords = options.cords === undefined ?
+              {x: 0, y: 0} : options.cords;
+  var radius = options.radius === undefined ?
+              25 : options.radius;
+  
+  // draw the chart ...
+}
+
+drawES5Chart({size: 'small', cords: {x: 18, y: 2}, radius: 30});
+drawES5Chart(); // works with default values
+```
+    
+---
+    
+# Use cases (6/6).
+    
+Optimized, shorter variant.
+    
+ES6
+
+```js
+function drawES6Chart({size: size = 'big',
+                      cords: cords = {x: 0, y: 0},
+                      radius: radius = 25} = {}) {  
+  // draw the chart ...
+}
+
+drawES6Chart({size: 'small', cords: {x: 18, y: 2}, radius: 30});
+drawES6Chart(); // works with default values
+```
+    
+[ES6 Fiddle](http://www.es6fiddle.net/ijbt6h1k/)
     
 ---
 class: center, middle, inverse
