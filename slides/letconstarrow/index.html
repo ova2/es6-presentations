@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Destructuring Assignment</title>
+    <title>Let, const, arrow functions</title>
     <meta charset="utf-8">
     <script src="//gnab.github.io/remark/downloads/remark-latest.min.js"></script>
     <style>
@@ -25,12 +25,92 @@ background-image: url(../../images/master-folie.png)
     
 ---
     
-# Slide 1.
+# Variables declared with var (1/3).
+    
+*Variables declared with __var__ are __hoisted__ to the top.*
+    
+What does it mean? Hoisting is a JavaScript's default behavior of moving all declarations
+to the top of the current scope. The current scope can be the current script or the current function.
+Example:
+    
+```js
+var a = 1;
+    
+console.log(a);  // 1
+```
+
+The variable `a` is declared as global (as expected).
+
+```js
+if (a === 1) {
+  var b = 2; 
+}
+    
+console.log(b);  // 2
+```
+    
+Variable `b` is inside an `if` block, but in JavaScript it doesn't create a new scope. It's declared as global too.
 
 ---
     
-# Slide 2.
+# Variables declared with var (2/3).
+    
+```js
+for (var c = 0; c < 3; c++) {
+  ...
+}
+    
+console.log(c);  // 3
+```
+    
+The variable `c` is declared in a `for` loop, but it is also lies in the global scope.
 
+```js
+function doSomething() {
+  var d = 4;
+}
+    
+console.log(d);  // ReferenceError: d is not defined
+```
+    
+The variable `d` is declared in his own scope. It's inside a function and only function creates new scopes.
+    
+---
+    
+# Variables declared with var (3/3).
+    
+Another example of __hoisting__:     
+    
+```js
+function doSomething (name) {
+  if (name === 'nico') {
+    var awesome = true
+  }
+  return awesome;
+}
+    
+doSomething('nico')  // <- true
+doSomething('marc')  // <- undefined
+```
+    
+Behind the scenes, the JavaScript engine changes the function to look like this
+    
+```js
+function doSomething (name) {
+  var awesome;
+  if (name === 'nico') {
+    awesome = true
+  }
+  return awesome;
+}
+```
+
+---
+class: center, middle, inverse
+    
+# That's all folks, thanks for your attention!
+   
+Slideshow created with [remark](https://github.com/gnab/remark).
     
 </textarea>
 <script>
