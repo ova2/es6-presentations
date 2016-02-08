@@ -104,6 +104,89 @@ function doSomething (name) {
   return awesome;
 }
 ```
+    
+---
+    
+# Let declaration.
+    
+The `let` declaration syntax is the same as the syntax for `var`, but it limits the variable's scope to only the current code block.
+Previous examples, but with `let`:
+    
+```js
+let a = 1;
+ 
+if (a === 1) {
+  let b = 2; 
+}
+ 
+for (let c = 0; c < 3; c++) {
+  ...
+}
+ 
+function doSomething() {
+  let d = 4;
+}
+ 
+console.log(a); // 1
+console.log(b); // ReferenceError: b is not defined
+console.log(c); // ReferenceError: c is not defined
+console.log(d); // ReferenceError: d is not defined
+```
+    
+---
+    
+# Pedeclaration pitfall.
+    
+If an identifier has already been defined in a scope, then using the identifier in a `let` declaration
+inside that scope causes an error to be thrown.
+    
+```js
+var count = 30;
+   
+// Syntax error is thrown
+// because count is declared twice within the same block
+let count = 40;
+```
+
+But the next `let` declaration doesn't throw an error.
+    
+```js
+var count = 30;
+    
+if (condition) {
+  let count = 40;
+}
+```
+    
+Why? Because it creates a new variable `count` within the `if` statement block,
+instead of creating `count` in the surrounding block. Inside the `if` block, this new variable shadows the global `count`,
+preventing access to it until execution leaves the block.
+    
+---
+    
+# The Temporal Dead Zone (TDZ).
+    
+The `let` and `const` declarations are not hoisted to the top of the enclosing block.
+A variable declared with either cannot be accessed before the declaration. Attempting to do so results in a reference error.
+    
+```js
+if (condition) {
+  console.log(typeof value);  // ReferenceError!
+  let value = "blue";         // TDZ
+}
+```
+    
+The line with `let value = "blue"` is never executed because the previous line throws an error.
+But the next code snippet works without errors because `typeof` check occurs outside of the block in which `value` is declared.
+    
+```js    
+console.log(typeof value);  // "undefined"   
+if (condition) {
+   let value = "blue";
+}
+```
+
+There is no `value` binding ouside of the block, and `typeof` simply returns `undefined`.
 
 ---
 class: center, middle, inverse
