@@ -165,21 +165,136 @@ __Answer__: the `if` statement contains `b` and `c` block-scoped variables, and 
     
 ---
     
-# Let + for.
+# Let declarations in loops (1/2).
     
-The
+```js
+var funcs = [];
+
+for (let i = 0; i < 5; i++) {
+  funcs.push(function(){
+    console.log(i);
+  });
+}
+
+funcs[3]();  // 3
+```
+    
+The `let i` in the `for` header redeclares a new `i` for each iteration of the loop.
+In other words, on each iteration, the loop creates a new variable `i` and the closures are created inside the loop iteration.
+    
+The same snippet, but with `var i` in the `for` loop header, would get `5` instead of `3`,
+because there would only be one `i` in the outer scope which had the last assigned value `i`.
+    
+[Fiddle with var](http://www.es6fiddle.net/il1agcx0/)
+    
+__Note:__ `let` also works the same way with `for..in` and `for..of` loops.
     
 ---
     
-# Const declaration (1/2).
+# Let declarations in loops (2/2).
     
-The
+Example for `for..in` loop:
+    
+```js
+var funcs = [],
+    object = {a: true, b: true, c: true};
+
+for (let key in object) {
+  funcs.push(function() {
+    console.log(key);
+  });
+}
+
+funcs.forEach(function(func) {
+  func();  // outputs "a", then "b", then "c"
+});
+```
+    
+Each time through the loop, a new `key` binding is created, and so each function has its own copy of the `key` variable.
+The result is that each function outputs a different value. If `var` were used to declare `key`, all functions would output `c`.
+    
+[Fiddle with var](http://www.es6fiddle.net/il1b6lld/)
     
 ---
     
-# Const declaration (2/2).
+# Const declaration (1/3).
     
-The
+`const` declaration creates constants. It is a variable that is read-only after its initial value is set.
+    
+```js
+const a = 2;
+console.log(a);  // 2
+    
+a = 3;  // SyntaxError: "a" is read-only
+```
+    
+Values of variables declared using `const` cannot be changed once set.
+For this reason, every `const` variable must be initialized on declaration:
+    
+```js
+// valid constant
+const maxItems = 30;
+    
+// SyntaxError: missing initialization
+const name;   
+```    
+    
+---
+    
+# Const declaration (2/3).
+
+Constants are not a restriction on the value itself, but on the variable's assignment of that value.
+In other words, the value is not frozen or immutable because of `const`, just the assignment of it.
+If the value is complex, such as an object or array, the contents of the value can still be modified.
+Example:
+    
+```js
+const a = [1,2,3];
+a.push(4);
+console.log(a);  // [1,2,3,4]
+    
+a = 42;  // SyntaxError
+```
+    
+Constants, like `let` declarations, are block-level declarations.
+    
+```js
+if (condition) {
+  const maxItems = 5;
+  ...
+}
+
+// maxItems isn't accessible here
+```
+    
+---
+    
+# Const declaration (3/3).
+    
+Constants, like `let` declarations, throws an error when made with an identifier
+for an already-defined variable in the same scope
+    
+```js
+var message = "Hello!";
+let age = 25;
+
+// each of these would throw an error.
+const message = "Goodbye!";
+const age = 30;
+```
+    
+Constans can be used in loops too.
+    
+```js
+// doesn't cause an error due to a new binding on each iteration
+for (const key in object) {
+  funcs.push(function() {
+    console.log(key);
+  });
+}
+```
+    
+__Attention:__ But the value of `key` cannot be changed inside the loop.
     
 ---
     
@@ -240,7 +355,7 @@ There is no `value` binding ouside of the block, and `typeof` simply returns `un
     
 # The Temporal Dead Zone (2/2).
     
-__Again, notice the difference__:
+__Memorize again and notice the difference__:
 
 Accessing a `let`-declared variable earlier than its `let` declaration / initialization
 causes an error, whereas with `var` declarations the ordering doesn't matter.
