@@ -271,27 +271,22 @@ if (condition) {
     
 # Const declaration (3/3).
     
-Constants, like `let` declarations, throws an error when made with an identifier
-for an already-defined variable in the same scope
-    
-```js
-var message = "Hello!";
-let age = 25;
-
-// each of these would throw an error.
-const message = "Goodbye!";
-const age = 30;
-```
-    
 Constans can be used in loops too.
     
 ```js
+var funcs = [],
+    object = {a: true, b: true, c: true};
+
 // doesn't cause an error due to a new binding on each iteration
 for (const key in object) {
   funcs.push(function() {
     console.log(key);
   });
 }
+
+funcs.forEach(function(func) {
+  func();  // outputs "a", then "b", then "c"
+});
 ```
     
 __Attention:__ But the value of `key` cannot be changed inside the loop.
@@ -300,13 +295,13 @@ __Attention:__ But the value of `key` cannot be changed inside the loop.
     
 # Redeclaration pitfall.
     
-If an identifier has already been defined in a scope, then using the identifier in a `let` declaration
+If an identifier has already been defined in a scope, then using the identifier in a `let` or `const` declaration
 inside that scope causes an error to be thrown.
     
 ```js
 var count = 30;
    
-// Syntax error is thrown
+// SyntaxError is thrown,
 // because count is declared twice within the same block
 let count = 40;
 ```
