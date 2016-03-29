@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Default, rest parameters, spread operator</title>
+    <title>Arrow and block-level functions</title>
     <meta charset="utf-8">
     <script src="//gnab.github.io/remark/downloads/remark-latest.min.js"></script>
     <style>
@@ -32,7 +32,7 @@ Arrow functions are anonymous functions that use an "arrow" __=>__. The syntax f
 All variations begin with _function arguments_, followed by the _arrow_, followed by the _body_ of the function.
 Both the arguments and the body can take different forms depending on usage.
     
-__Single argument.__ When there is only one argument for an arrow function, that one argument can be used directly without any parentheses.
+__Single argument.__ When there is only one argument for an arrow function, it can be used directly without any parentheses.
 The expression to the right of the arrow is evaluated and returned.
     
 ES6
@@ -285,6 +285,64 @@ var MyType = () => {};
 var object = new MyType();  // error
 ```
 
+---
+    
+# Block-level functions. Strict mode.
+    
+In ECMAScript before 6, a function declaration inside of a block led to a different behavior in browsers,
+so it is considered a best practice to avoid function declarations inside of blocks.
+In ECMAScript 6, block-level functions were standardized.
+    
+```js
+"use strict";
+    
+if (true) {
+  console.log(typeof doSomething);  // "function"
+    
+  function doSomething() {
+    ...
+  }
+    
+  doSomething();
+}
+    
+console.log(typeof doSomething);  // "undefined"
+```
+    
+In the strict mode, block level functions are hoisted to the top of the block in which they are defined.
+Once the `if` block finished executing, `doSomething()` no longer exists.
+    
+---
+    
+# Block-level functions. Non strict mode.
+    
+ECMAScript 6 also allows block-level functions in non strict mode, but the behavior is slightly different.
+Instead of hoisting these declarations to the top of the block, they are hoisted to the containing function or global environment.
+    
+```js
+if (true) {
+  console.log(typeof doSomething);  // "function"
+    
+  function doSomething() {
+    ...
+  }
+    
+  doSomething();
+}
+    
+console.log(typeof doSomething);  // "function"
+```
+    
+In this example, `doSomething()` is hoisted into the global scope so that it still exists outside of the `if` block.
+ECMAScript 6 standardized this behavior to remove the incompatible browser behaviors that previously existed,
+so all ECMAScript 6 runtimes should behave in the same way.
+    
+---
+class: center, middle, inverse
+    
+# That's all folks, thanks for your attention!
+   
+Slideshow created with [remark](https://github.com/gnab/remark).
     
 </textarea>
 <script>
