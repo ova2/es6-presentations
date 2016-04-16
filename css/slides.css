@@ -55,3 +55,8 @@ a:hover {
     color: #f3f3f3;
     line-height: 0.8em;
 }
+
+.back {
+    display: block;
+    padding: 20px 0 20px 0;
+}
