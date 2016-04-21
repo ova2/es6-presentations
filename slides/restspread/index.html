@@ -207,7 +207,61 @@ parameters' scope, and luckily `x` has already been initialized, so the assignme
     
 However, the `z` in `z + 1` finds `z` as a not-yet-initialized-at-that-moment parameter variable,
 so it never tries to find the `z` from the outer scope and throws a `ReferenceError`.
-    
+
+---
+
+# The spread operator (1/2).
+
+ES6 introduces a new `...` operator that's typically referred to as the __spread__ or __rest__ operator,
+depending on where/how it's used. When `...` is used in front of an *iterable* (Array, Set, Map, ...),
+it acts to "spread" it out into its individual values.
+
+__A typical usage__: Specify an array, split it into items which are passed in as separate arguments to a function.
+
+```js
+function foo(x, y, z) {
+  console.log(x, y, z);
+}
+
+foo(...[1,2,3]);  // 1 2 3
+```
+
+ES5 way:
+
+```js
+foo.apply(null, [1,2,3]);   // 1 2 3
+```
+
+That means, the spread operator acts as a simple syntactic replacement for the `apply()` method.
+
+---
+
+# The spread operator (2/2).
+
+The spread operator be used to spread out a value in other contexts as well, such as inside another array declaration:
+
+```js
+var a = [2, 3, 4];
+var b = [1, ...a, 5];
+console.log(b);         // [1, 2, 3, 4, 5]
+```
+
+Here, `...` is replacing `concat()`, as it behaves like `[1].concat(a, [5])`.
+
+Another example for mixing the spread operator with other arguments:
+
+```js
+let values = [-25, -50, -75, -100];
+console.log(Math.max(...values, 0));    // 0
+```
+
+ES5 equivalent:
+
+```js
+let values = [-25, -50, -75, -100];
+console.log(Math.max.apply(Math, values.concat([0])));    // 0
+```
+
 ---
 class: center, middle, inverse
     
