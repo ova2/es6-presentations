@@ -25,11 +25,102 @@ background-image: url(../../images/master-folie.png)
     
 ---
     
-# Slide 1.
+# Template literals.
+    
+__Template literals__ is a new feature in ES6 to make working with strings and string templates easier.
+You wrap your text in backticks (instead of double or single quotes) and you'll get the following features:
+    
+- Multiline strings without hacks.
+- String formatting - the ability to substitute parts of the string for values contained in variables. This ability is also called string interpolation.
+- Tagged templates - string tagging for safe HTML escaping, localisation and more.
+    
+Basic syntax:
+    
+```js
+let message = `Hello world!`;
+    
+console.log(message);           // "Hello world!"
+console.log(typeof message);    // "string"
+```
+    
+The variable `message` contains a normal JavaScript string. If you want to use a backtick in your string, then just escape it with a backslash.
+    
+```js
+let message = `\`Hello\` world!`;
+```
 
 ---
     
-# Slide 2.
+# Multiline strings (1/3).
+    
+In ES5, when using double or single quotes, strings must be completely contained on a single line. There are workarounds for this shortcoming.
+  
+Workarounds with backslash which is treated as a continuation, `join` and `\n`.
+  
+```js
+var message = "Multiline \
+string";
+
+console.log(message);    // "Multiline string"
+```
+  
+```js
+var message = [
+  "Multiline ",
+  "string"
+].join("\n");
+```
+  
+```js
+let message = "Multiline \n" +
+  "string";
+```
+    
+---
+    
+# Multiline strings (2/3).
+    
+In ES6, template literals make multiline strings easy because there's no special syntax. Just include a newline where you want.
+    
+```js
+let message = `Multiline
+string`;
+
+console.log(message);    // "Multiline
+                         //  string"
+```
+    
+All whitespaces inside the backticks are parts of the string, so be careful with indentation.
+    
+```js
+let message = `Multiline
+               string`;
+
+console.log(message);     // "Multiline
+                          //                 string"
+```
+    
+---
+    
+# Multiline strings (3/3).
+    
+If making the text line up with proper indentation is important to you, then consider leaving nothing on the first line
+of a multiline template literal and then indenting after that.
+    
+Example:
+
+```js
+let html = `
+<div>
+    <h1>Title</h1>
+</div>`.trim();
+```
+    
+---
+    
+https://developers.google.com/web/updates/2015/01/ES6-Template-Strings
+https://ponyfoo.com/articles/es6-template-strings-in-depth
+https://www.sitepoint.com/es6-template-literals-techniques-and-tools/
     
 ---
 class: center, middle, inverse
