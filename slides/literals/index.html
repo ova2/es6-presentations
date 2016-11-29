@@ -199,24 +199,101 @@ This will generate the following output:
     
 ---
     
-# Tagged Templates (1/3).
+# Tagged templates (1/4).
     
 A _template tag_ performs a transformation on the template literal and returns the final string value.
-This tag is specified at the start of the template, just before the first __`__ character, e.g.
+This tag is specified at the start of the template, just before the first backtick, e.g.
     
 ```js
 let message = tag`Hello world`;
 ```
     
 In this example, `tag` is the template tag to apply to the `Hello world` template literal.
-A template tag is a function. The first argument is an array containing the literal strings.
-Each subsequent argument is the interpreted value of each substitution.
+A template tag is a function.
+    
+- The first argument of this function is an array of all the plain strings (the stuff between any interpolated expressions).
+- Each subsequent argument is the interpreted value of each substitution.
     
 ```js
 function tag(literals, ...substitutions) {
   // return a string
 }
 ```
+    
+---
+    
+# Tagged templates (2/4).
+    
+Simple example which outputs arguments.
+    
+```js
+function foo(strings, ...values) {
+  console.log(strings);
+  console.log(values);
+}
+
+var desc1 = "very";
+var desc2 = "awesome";
+
+foo`Everything is ${desc1} ${desc2}!`;
+    
+// ["Everything is ", " ", "!"]
+// ["very", "awesome"]
+```
+    
+__Using in real world:__ special processing for internationalization, localization, HTML escaping and more.
+    
+---
+    
+# Tagged templates (3/4).
+    
+Another example that mimics the default behavior of a template literal.
+    
+```js
+function passthru(literals, ...substitutions) {
+  let result = "";
+
+  // run the loop only for the substitution count
+  for (let i = 0; i < substitutions.length; i++) {
+    result += literals[i];
+    result += substitutions[i];
+  }
+
+  // add the last literal
+  result += literals[literals.length - 1];
+
+  return result;
+}
+
+let count = 10,
+    price = 0.25,
+    message = passthru`${count} items cost $${(count * price)}.`;
+
+console.log(message);  // "10 items cost $2.50."
+```
+    
+---
+    
+# Tagged templates (4/4).
+    
+There's an additional bit of data included: the raw unprocessed versions of all the strings.
+You can access those raw string values using the `.raw` property of the first argument. Example:
+    
+```js
+function showraw(strings, ...values) {
+  console.log(strings);
+  console.log(strings.raw);
+}
+
+showraw`Hello\nWorld`;
+// [ "Hello
+// World" ]
+// [ "Hello\nWorld" ]
+```
+    
+The raw version of the value preserves the raw escaped `\n` sequence (the `\` and the `n` are separate characters).
+    
+__Note:__ ES6 comes with a built-in function `String.raw(...)` that can be used to access the raw string.
     
 ---
 class: center, middle, inverse
