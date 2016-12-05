@@ -296,6 +296,97 @@ The raw version of the value preserves the raw escaped `\n` sequence (the `\` an
 __Note:__ ES6 comes with a built-in function `String.raw(...)` that can be used to access the raw string.
     
 ---
+    
+# Object literal syntax extensions (1/4).
+
+__ES5.__ Object creation leads to duplications when the names are the same as the function parameter names.
+
+```js
+function createPerson(name, age) {
+  return {
+    name: name,
+    age: age
+  };
+} 
+```
+    
+__ES6.__ Property initializer shorthand: when an object property name is the same as the local variable name,
+you can simply include the name without a colon and value.
+
+```js
+function createPerson(name, age) {
+  return {
+    name,
+    age
+  };
+} 
+```
+    
+---
+    
+# Object literal syntax extensions (2/4).
+    
+__ES5.__ You must specify a name and then the full function definition to add a method to an object.
+
+```js
+var person = {
+  name: "Nicholas",
+  sayName: function() {
+    console.log(this.name);
+  }
+}; 
+```
+    
+__ES6.__ The colon and the `function` keyword can be eliminated.
+
+```js
+var person = {
+  name: "Nicholas",
+  sayName() {
+    console.log(this.name);
+  }
+};
+```
+    
+---
+    
+# Object literal syntax extensions (3/4).
+
+In __ES6__, computed property names can be used in object literals within square brackets.
+    
+```js
+var suffix = " name";
+var lastName = "last name";
+
+var person = {
+    ["first" + suffix]: "Max",
+    [lastName]: "Mustermann"
+};
+
+console.log(person["first" + suffix]);  // "Max"
+console.log(person[lastName]);          // "Mustermann"    
+```
+    
+It is not possible in __ES5__ where only constants may be used in object literals.
+    
+---
+    
+# Object literal syntax extensions (4/4).
+    
+In __ES6__, the duplicate property check was removed.
+There is no syntax error as in __ES5__ when two and more properties have the same names.
+Instead, the last property of the given name becomes the property's actual value.
+    
+```js
+var person = {
+  name: "Max",
+  name: "Greg"
+};
+
+console.log(person.name);  // "Greg"
+```
+    
+---
 class: center, middle, inverse
     
 # That's all folks, thanks for your attention!
