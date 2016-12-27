@@ -287,6 +287,147 @@ console.log(subitems instanceof MyArray);   // true
     
 ---
     
+# Accessors (1/2).
+    
+We have the ability to define getters and setters for our fields. This feature allows to access the fields as any other object property.
+    
+```js
+class Warrior {
+  constructor(name) {
+    this._name = name;
+    this._health = 100;
+  }
+
+  get health() {
+    return this._health;
+  }
+    
+  set health(newHealth){
+    this._health = newHealth;
+  }
+}
+
+let donatello = new Ninja("Donatello");
+    
+console.log(donatello.health);   // 100
+donatello.health = 80;
+```
+
+---
+    
+# Accessors (2/2).
+    
+When we define a getter and no setter, the variable with the getter / setter name becomes read-only.
+    
+```js
+class Warrior {
+  constructor(name) {
+    this._name = name;
+    this._health = 100;
+  }
+
+  get health() {
+    return this._health;
+  }
+}
+
+let donatello = new Ninja("Donatello");
+    
+console.log(donatello.health);   // 100
+donatello.health = 80;   // TypeError: Cannot set property health...
+```
+    
+---
+    
+# Static Methods (1/3).
+    
+Adding additional methods directly onto constructors to simulate static members is a common pattern in ES5 and earlier.
+    
+```js
+function PersonType(name) {
+  this.name = name;
+}
+
+// static method
+PersonType.create = function(name) {
+  return new PersonType(name);
+};
+
+// instance method
+PersonType.prototype.sayName = function() {
+  console.log(this.name);
+};
+
+var person = PersonType.create("Nicholas"); 
+```
+    
+---
+    
+# Static Methods (2/3).
+    
+ES6 classes simplify the creation of static members by using the `static` annotation before the method or accessor property name.
+    
+```js
+class PersonClass {
+  constructor(name) {
+    this.name = name;
+  }
+    
+  sayName() {
+    console.log(this.name);
+  }
+    
+  static create(name) {
+    return new PersonClass(name);
+  }
+}
+
+let person = PersonClass.create("Nicholas");
+```
+    
+---
+    
+# Static Methods (3/3).
+    
+One thing you can do in JavaScript but can't in Java: from the derived class you can override and call your parents static method.
+    
+```js
+class Foo {
+  static classMethod() {
+    return 'hello';
+  }
+}
+
+class Bar extends Foo {
+  static classMethod() {
+    return super.classMethod() + ', too';
+  }
+}
+    
+Bar.classMethod();   // 'hello, too'
+```
+    
+---
+    
+# Static Fields.
+    
+There are no static fields in ES6, but there is a discussion about it for ES7.
+Right now you can simulate the functionality like this:
+    
+```js
+class Foo {
+  constructor() {}
+}
+
+const staticNumber = 5;
+const staticObj = {prop: 5};
+
+Foo.staticNumber = staticNumber;
+Foo.staticObj = staticObj;  
+```
+    
+---
+    
 # Abstract classes.
     
 This concept is not implemented in ES6 or ES7, but we can simulate abstract classes.
@@ -313,6 +454,97 @@ class Rectangle extends Shape {
 var x = new Shape();   // throws error because new.target is Shape
 var y = new Rectangle(3, 4);   // no error, new.target is Rectangle
 ```
+    
+---
+    
+# Abstract methods.
+    
+This concept is not implemented too, but we can mimic abstract methods.
+    
+```js
+class Abstract {
+  constructor() {
+    if (this.method === undefined) {
+      throw new TypeError("Must override method");
+    }
+  }
+}
+
+class Derived1 extends Abstract {}
+
+class Derived2 extends Abstract {
+  method() {}
+}
+
+const a = new Abstract(); // this.method is undefined; error
+const b = new Derived1(); // this.method is undefined; error
+const c = new Derived2(); // this.method is
+                          // Derived2.prototype.method; no error    
+```
+    
+---
+    
+# Private fields.
+    
+Private fields are not supported in any ES right now, but there are a couple of new structures in ES6 that let you emulate the private scope.
+    
+```js
+const private = new WeakMap();
+
+class Warrior {    
+  constructor(name) {
+    this._name = name;
+    
+    private.set(this, {
+        health: 100
+    });    
+  }
+
+  get health(){
+    return private.get(this).health;
+  }
+}  
+```
+
+__Warning__: The above `WeakMap` is shared among all Warrior instances, so potentially you can access another warrior's health.
+    
+---
+    
+# Functions overloading.
+    
+This functionality have never existed in JavaScript and there is no plan on supporting it.
+If you have e.g. three methods of the same name `say`
+    
+```js
+class Person {    
+  say(what) { //string
+    console.log(thing);
+  }
+
+  say(things) { //array
+    things.forEach(function(thing){
+        console.log(thing);
+    });        
+  }
+
+  say() {
+    console.log("blah")
+  }
+}    
+```
+
+the last `say()` method wins (overwrites all other).
+    
+JavaScript has no type checking on arguments or required quantity of arguments,
+so you can just have one implementation of `say()`.
+    
+---
+    
+# Interfaces.
+    
+There is no concept of interfaces in any version of JavaScript.
+    
+You can find interfaces in TypeScript.
     
 ---
 class: center, middle, inverse
