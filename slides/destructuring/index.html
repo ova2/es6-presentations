@@ -30,7 +30,7 @@ background-image: url(../../images/master-folie.png)
 *Destructuring is a convenient way to extract values from data stored in Objects and Arrays (also nested).
  This is an opposite operation to structuring (constructing data).*
     
-There is a nice syntax for constructing data in JavaScript – an *object literal*:
+There is a nice syntax for constructing data in JavaScript – an __object literal__:
     
 ```js
 var obj = {first: 'Jane', last: 'Leo'};
@@ -248,8 +248,6 @@ console.log(typeof x);  // undefined
 console.log(y);         // 'c'
 ```
     
-[ES6 Fiddle](http://www.es6fiddle.net/ijakjtid/)
-    
 ---
     
 # If a part has no match (3/3).
@@ -270,8 +268,6 @@ var bar = temp.foo.bar;
     
 // Exception: TypeError
 ```
-    
-For more complex example check the FF or Chrome console of this [ES6 Fiddle](http://www.es6fiddle.net/ikcq0937/)
     
 ---
     
@@ -330,8 +326,6 @@ if (someValue.prop === undefined) {
     
 # Default values (3/3).
 
-__Quiz__: Quess the output of this fiddle: [ES6 Fiddle](http://www.es6fiddle.net/ijbnc8nk/)
-    
 So far we have only seen default values for variables, but you can also associate them with object itself:
     
 ```js
@@ -479,8 +473,6 @@ var [x, y, z] = 'abc';
 var [x, y] = new Set(['a', 'b']);
 // x = 'a', y = 'b’
 ```
-    
-[ES6 Fiddle to a complex example](http://www.es6fiddle.net/ijbprm0q/)
 
 ---
     
@@ -503,8 +495,6 @@ var date = '...';   // some string
 var [, year, month, day] =
     /^(\d\d\d\d)-(\d\d)-(\d\d)$/.exec(date) || [];
 ```
-    
-[Fiddle of the ES5 variant](http://www.es6fiddle.net/ijbrxsc8/)
     
 ---
     
@@ -575,8 +565,6 @@ function drawES6Chart({size: size = 'big',
 drawES6Chart({size: 'small', cords: {x: 18, y: 2}, radius: 30});
 drawES6Chart(); // works with default values
 ```
-    
-[ES6 Fiddle](http://www.es6fiddle.net/ijbt6h1k/)
     
 ---
 class: center, middle, inverse

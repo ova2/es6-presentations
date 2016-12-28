@@ -184,9 +184,7 @@ In other words, on each iteration, the loop creates a new variable `i` and the c
     
 The same snippet, but with `var i` in the `for` loop header, would get `5` instead of `3`,
 because there would only be one `i` in the outer scope which had the last assigned value `i`.
-    
-[Fiddle with var](http://www.es6fiddle.net/il1agcx0/)
-    
+
 __Note:__ `let` also works the same way with `for..in` and `for..of` loops.
     
 ---
@@ -212,8 +210,6 @@ funcs.forEach(function(func) {
     
 Each time through the loop, a new `key` binding is created, and so each function has its own copy of the `key` variable.
 The result is that each function outputs a different value. If `var` were used to declare `key`, all functions would output `c`.
-    
-[Fiddle with var](http://www.es6fiddle.net/il1b6lld/)
     
 ---
     
