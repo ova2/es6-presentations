@@ -26,10 +26,103 @@ background-image: url(../../images/master-folie.png)
 ---
     
 # Slide 1.
+    
+---
+    
+# All supported syntax at a glance.
+    
+```js
+// import a module without any import bindings
+import 'jquery';
+// import the default export of a module
+import $ from 'jquery';
+// import a named export of a module
+import { $ } from 'jquery';
+// import a named export to a different name
+import { $ as jQuery } from 'jquery';
+// import an entire module instance object
+import * as crypto from 'crypto';
+    
+// export a named function
+export function foo() {};
+// export the default export as a function
+export default function foo() {};
+// export an existing variable
+export { encrypt };
+// export a variable as a new name
+export { decrypt as dec };
+// export an export from another module
+export { encrypt as en } from 'crypto';
+// export all exports from another module
+export * from 'crypto';
+```
+    
+---
+    
+# Loading modules in browsers.
+    
+To support modules, the __module__ value was added as a `type` option of the `script` element.
+Setting type to __module__ tells the browser to load any inline code or code contained in the file
+specified by `src` as a module.
+    
+```js
+<!-- load a module JavaScript file -->
+<script type="module" src="module.js"></script>
+    
+<!-- include a module inline -->
+<script type="module">
+import { sum } from "./example.js";
+
+let result = sum(1, 2);
+</script>
+```
+    
+- The variable `result` is not exposed globally because it exists only within the module and is therefore not added to `window` as a property.
+- Browsers that don't support modules will automatically ignore the `script type="module"` line.
+- The `defer` attribute is optional for loading script files but is always applied for loading module files. That means, modules are executed after the document has been completely parsed.
+- Modules are executed in the order in which they appear in the HTML file.
 
 ---
     
-# Slide 2.
+# Importing a module conditionally.
+    
+Import statements must always be at the top level of modules. That means that you can't nest them inside if-statements, functions, etc.
+Therefore, you have to use the *programmatic loader API* if you want to load a module conditionally or on demand. There are several ways.
+For instance:
+
+- Include [SystemJS](https://github.com/systemjs/systemjs) on a page. After that, you can use `System.import('module_name')` which returns a Promise. The Promise gets resolved with the module object.
+- Use a bundler such as [Webpack](https://webpack.js.org/). Webpack can understand both syntax `System.import(...)` as well `import(...)`.
+
+Example:
+    
+```js
+if (Math.random()) {
+  System.import('some_module').then(some_module => {
+    // Use some_module
+  })
+}  
+```
+    
+---
+    
+# Using variables in module name.
+    
+The `import` statement is completely static. Remember – what is imported must not depend on anything that is computed at runtime.
+Therefore, this doesn't work:
+    
+```js
+// Illegal syntax:
+import foo from 'some_module' + SUFFIX;
+```
+    
+If you want to dynamically determine what module to load, you need to apply the same approach with `System.import(...)`.
+    
+```js
+const moduleSpecifier = 'module_' + Math.random();
+System.import(moduleSpecifier).then(the_module => {
+  // Use the_module
+})
+```
 
 ---
 class: center, middle, inverse
