@@ -95,7 +95,7 @@ __Important notes:__
 - Class declarations begin with the `class` keyword followed by the name of the class.
 - Commas are invalid between methods in a class.
 - Properties that occur on the instance rather than the prototype, can only be created inside a class constructor or method. In the example these are `fuel` and `distance`.
-- All methods are non-enumerable. They don't show up when you do a `for...in` loop over the object or use `Object.keys()` to get an array of property names.
+- All methods are non-enumerable. They don't show up when you do a `for...in` loop over the object or use `Object.keys()` to get an array of property names. But you can iterate over class methods by `Object.getOwnPropertyNames(MyClass.prototype)`.
 - Calling the class constructor without `new` throws an error.
 - Attempting to overwrite the class name within a class method throws an error.
     
