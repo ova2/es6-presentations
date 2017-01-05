@@ -25,7 +25,356 @@ background-image: url(../../images/master-folie.png)
     
 ---
     
-# Slide 1.
+# Creating Symbols.
+    
+The symbol is a new primitive type, a unique token that is guaranteed never to clash with another symbol.
+
+Symbols are created by calling the `Symbol` function.
+Every time you call the `Symbol` function, you will get a new and completely unique value.
+    
+```js
+let foo = Symbol();
+let bar = Symbol();
+
+foo === bar   // false
+```
+    
+Symbols can also be created with a label, by passing a string as the first argument.
+The label does not affect the value of the symbol, but is useful for debugging, and is shown if the symbol's `toString()` method is called.
+    
+```js
+let foo = Symbol('baz');
+let bar = Symbol('baz');
+
+foo === bar         // false
+console.log(foo);   // Symbol(baz)
+```  
+    
+---
+    
+# Using Symbols (1/4).
+    
+Symbols could often be a good replacement for strings or integers as class/module constants
+because string and integers are not unique values and could also be in use elsewhere in the program for different purposes.
+    
+```js
+class Application {
+  constructor(mode) {
+    switch (mode) {
+      case Application.DEV:
+        // Set up app for development environment
+        break;
+      case Application.PROD:
+        // Set up app for production environment
+        break;
+      default:
+        throw new Error('Invalid application mode: ' + mode);
+    }
+  }
+}
+
+Application.DEV = Symbol('dev');
+Application.PROD = Symbol('prod');
+
+let app = new Application(Application.DEV);
+```
+    
+---
+    
+# Using Symbols (2/4).
+    
+Another interesting use of symbols is as object property keys. There are a couple of advantages to doing so:
+- You can be sure that symbol-based keys will never clash, unlike string keys, which might conflict with keys for existing properties or methods.
+- They won't be enumerated in `for..in` loops, and are ignored by functions such as `Object.keys()`, `Object.getOwnPropertyNames()` and `JSON.stringify()`. This makes them ideal for properties that you don't want to be included when serializing an object.
+    
+```js
+let user = {};
+let email = Symbol();
+
+user.name = 'Fred';
+user.age = 30;
+user[email] = 'fred@example.com';
+
+Object.keys(user);                  // ["name", "age"]
+Object.getOwnPropertyNames(user);   // ["name", "age"]
+JSON.stringify(user);               // "{"name":"Fred","age":30}"
+```
+    
+---
+    
+# Using Symbols (3/4).
+    
+However, it is possible to access symbol-based property keys by
+- `Object.getOwnPropertySymbols()`. It returns an array of any symbol-based keys.
+- `Reflect.ownKeys()`. It returns an array of all keys, including symbols.
+    
+```js
+Object.getOwnPropertySymbols(user);   // [Symbol()]
+    
+Reflect.ownKeys(user);                // ["name", "age", Symbol()]
+```
+    
+Another example of using symbols as property keys:
+    
+```js
+log.levels = {
+  DEBUG: Symbol('debug'),
+  INFO: Symbol('info'),
+  WARN: Symbol('warn'),
+};
+
+log(log.levels.DEBUG, 'debug message');
+log(log.levels.INFO, 'info message'); 
+```
+    
+---
+    
+# Using Symbols (4/4).
+    
+You could also use symbols to store custom metadata properties that are secondary to the actual Object.
+    
+```js
+var size = Symbol('size');
+class Collection {
+  constructor() {
+    this[size] = 0;
+  }
+
+  add(item) {
+    this[this[size]] = item;
+    this[size]++;
+  }
+
+  static sizeOf(instance) {
+    return instance[size];
+  }
+}
+
+var x = new Collection();
+x.add('foo');
+assert(Collection.sizeOf(x) === 1);
+Object.keys(x);                   // ['0'];
+Object.getOwnPropertyNames(x);    // ['0'];
+Object.getOwnPropertySymbols(x)   // [size];
+```  
+    
+---
+    
+# Sharing Symbols.
+    
+Different parts of your code can use the same symbols. ES6 provides a global symbol registry that you can access at any point in time.
+When you want to create a symbol to be shared, use the `Symbol.for()` method instead of calling the `Symbol()` method.
+The `Symbol.for()` method accepts a single parameter, which is a string identifier for the symbol you want to create.
+    
+```js
+let uid = Symbol.for("uid");
+let object = {};
+object[uid] = "12345";
+
+console.log(object[uid]);   // "12345"
+```
+    
+The `Symbol.for()` method first searches the global symbol registry to see if a symbol with the key `uid` exists.
+If so, the method returns the existing symbol. If no such symbol exists, then a new symbol is created and registered
+to the global symbol registry. The new symbol is then returned.
+
+`Symbol.keyFor()` retrieves the key associated with a symbol in the global symbol registry.
+    
+```js
+let uid = Symbol.for("uid");
+console.log(Symbol.keyFor(uid));   // "uid"
+```
+    
+---
+    
+# Well-known Symbols (1/7).
+    
+There is a list of symbols that JavaScript treats specially. They are called as __well-known symbols__. 
+Well-known symbols are used by built-in JavaScript algorithms. Let's look three well-known symbols.
+    
+__Symbol.iterator__
+    
+`Symbol.iterator` allows to define how the object should be iterated using `for...of` statement or consumed by `...` spread operator.
+Many built-in types like strings, arrays, maps, sets are iterables, i.e. they have a `Symbol.iterator` property.
+The property holds a method used to iterate over data structure. Example:
+    
+```js
+let myString = 'Hola';  
+typeof myString[Symbol.iterator];   // => 'function'  
+for (let char of myString) {  
+  console.log(char);   // 'H', 'o', 'l', 'a'
+}
+    
+[...myString]; // => ['H', 'o', 'l', 'a']
+```
+
+---
+    
+# Well-known Symbols (2/7).
+
+Another example with `Set`:
+    
+```js
+var mySet = new Set();
+mySet.add("0");
+mySet.add(1);
+mySet.add({});
+
+for (var v of mySet) {
+  console.log(v);
+}
+```
+    
+The method defined by `Symbol.iterator` should return an object that conforms to [iterator protocol](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#iterable).
+The iterator protocol object should have a method `next()` that returns
+
+`{value: <iterator_value>, done: <boolean_finished_iterator>}`.
+    
+```js
+var setIter = mySet[Symbol.iterator]();
+
+console.log(setIter.next().value);   // "0"
+console.log(setIter.next().value);   // 1
+console.log(setIter.next().value);   // Object
+```
+    
+---
+    
+# Well-known Symbols (3/7).
+    
+Let's see how to define a custom iterator. The following example creates an iterable object `myMethods`, which allows to go over the owned methods.
+    
+```js
+function methodsIterator() {  
+  let index = 0;
+  let methods = Object.keys(this).filter((key) => {
+    return typeof this[key] === 'function';
+  }).map(key => this[key]);
+  return {
+    next: () => ({ // Conform to iterator protocol
+      done : index >= methods.length,
+      value: methods[index++]
+    })
+  };
+}
+    
+let myMethods = {  
+  toString: function() {return '[object myMethods]';},
+  sumNumbers: function(a, b) {return a + b;},
+  [Symbol.iterator]: methodsIterator // Conform to iterable protocol
+};
+    
+for (let method of myMethods) {  
+  console.log(method); // logs methods `toString` and `sumNumbers`
+} 
+```
+    
+---
+    
+# Well-known Symbols (4/7).
+    
+__Symbol.hasInstance__
+    
+`Symbol.hasInstance` is a `Symbol` which drives the behaviour of `instanceof`. When an ES6 compliant engine sees
+the `instanceof` operator in an expression it calls upon `Symbol.hasInstance`.
+    
+For example, `lho instanceof rho` would call
+    
+```js
+rho[Symbol.hasInstance](lho)
+```
+
+(where `rho` is the right hand operand and `lho` is the left hand operand).
+It's then up to the method to determine if it inherits from that particular instance. You could implement this like so:
+
+```js
+class MyClass {
+  static [Symbol.hasInstance](lho) {
+    return Array.isArray(lho);
+  }
+}
+
+[] instanceof MyClass;   // => true
+```
+    
+---
+    
+# Well-known Symbols (5/7).
+    
+Another cool example to verify if an object or primitive is iterable:
+    
+```js
+class Iterable {
+  static [Symbol.hasInstance](obj) {
+    return typeof obj[Symbol.iterator] === 'function';
+  }
+}
+
+let array = [1, 5, 5];
+let string = 'Welcome';
+let number = 15;
+    
+array instanceof Iterable;    // => true
+string instanceof Iterable;   // => true
+number instanceof Iterable;   // => false
+```
+    
+---
+    
+# Well-known Symbols (6/7).
+    
+__Symbol.species__
+    
+Use `Symbol.species` to specify a property whose value is a constructor function used to create derived objects.
+Many JavaScript constructors have the value of `Symbol.species` equal to the constructor itself:
+    
+```js
+Array[Symbol.species] === Array;    // => true  
+Map[Symbol.species] === Map;        // => true  
+RegExp[Symbol.species] === RegExp;  // => true
+```
+    
+But you can customize this behavior. Take for example `Array#map`, which creates a new Array resulting
+from each return value of the callback. In ES5, the code of `Array#map` might look something like this:
+    
+```js
+Array.prototype.map = function (callback) {
+  var returnValue = new Array(this.length);
+  this.forEach(function (item, index, array) {
+    returnValue[index] = callback(item, index, array);
+  });
+  return returnValue;
+}
+``` 
+    
+---
+    
+# Well-known Symbols (7/7).
+    
+In ES6, `Array#map` has been upgraded to create objects using the `Symbol.species` property.
+    
+```js
+Array.prototype.map = function (callback) {
+  var Species = this.constructor[Symbol.species];
+  var returnValue = new Species(this.length);
+  this.forEach(function (item, index, array) {
+    returnValue[index] = callback(item, index, array);
+  });
+  return returnValue;
+}
+```
+    
+Now, if you make a class like this one, every time you call `Foo#map` it returns `Foo` instances instead of `Array`.
+
+```js
+Foo extends Array {
+  static get [Symbol.species]() {
+    return this;
+  }
+}
+    
+new Foo().map(function(){}) instanceof Foo   // => true
+```
 
 ---
 class: center, middle, inverse
