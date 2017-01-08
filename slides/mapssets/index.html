@@ -25,7 +25,174 @@ background-image: url(../../images/master-folie.png)
     
 ---
     
-# Slide 1.
+# Maps (1/6).
+    
+In ES5, the major drawback with objects-as-maps is the inability to use a non-string value as the key. Example:
+    
+```js
+var m = {};
+var x = { id: 1 },
+    y = { id: 2 };
+
+m[x] = "foo";
+m[y] = "bar";
+
+m[x];  // "bar"
+m[y];  // "bar"
+```
+    
+The two objects `x` and `y` both stringify to `"[object Object]"`, so only that one key is being set in `m`.
+    
+In ES6, you can use `Map(...)` to fix this problem. Map is a key/value data structure.
+    
+---
+    
+# Maps (2/6).
+    
+The `Map` has `set(...)` and `get(...)` methods.
+    
+```js
+var m = new Map();
+var x = { id: 1 },
+    y = { id: 2 };
+
+m.set(x, "foo");
+m.set(y, "bar");
+
+m.get(x);   // "foo"
+m.get(y);   // "bar"
+```
+    
+You're able to use anything for the keys. You're not just limited to primitive values like symbols, numbers, or strings,
+but you can even use functions, objects and dates too.
+    
+```js
+var map = new Map();
+map.set(new Date(), function today() {});
+map.set(() => 'key', {pony: 'foo'});
+map.set(Symbol('items'), [1, 2]);
+```
+    
+---
+    
+# Maps (3/6).
+    
+To delete an element from a map, use the `delete(...)` method.
+    
+```js
+m.set(x, "foo");
+m.set(y, "bar");
+
+m.delete(y);
+```
+    
+To determine if a map has a given key, use `has(...)`.
+    
+```js
+m.has(y)   // false
+```
+    
+You can clear the entire map's contents with `clear()`. To get the length of a map (i.e., the number of keys), use the `size` property.
+    
+```js
+m.set(x, "foo");
+m.set(y, "bar");
+m.size;      // 2
+
+m.clear();
+m.size;      // 0 
+```
+    
+---
+    
+# Maps (4/6).
+    
+The `Map(...)` constructor can receive an iterable, which must produce a list of arrays, where the first item in each array
+is the key and the second item is the value.
+    
+```js
+var x = { id: 1 },
+    y = { id: 2 };
+
+var m = new Map([[x, "foo"], [y, "bar"]]);
+
+m.get(x);   // "foo"
+m.get(y);   // "bar"
+```
+    
+This format for iteration is identical to that produced by the `entries()` method. That makes it easy to make a copy of a map:
+    
+```js
+var m2 = new Map(m.entries());
+var m3 = new Map(m);   // the same as above
+```
+    
+You don't need to explicitly iterate over `.entries()` because
+    
+```js
+map[Symbol.iterator] === map.entries   // => true
+```
+    
+---
+    
+# Maps (5/6).
+    
+You can iterate over `Map` entries in multiple ways.
+    
+`for..of` loop combined with destructuring.
+    
+```js
+var map = new Map();
+map.set('s', 'o');
+map.set('m', 'e');
+for (let [key, value] of map) {
+  console.log(`${key}: ${value}`);
+}
+// <- 's: o'
+// <- 'm: e'
+```
+    
+`.forEach` method (same as for array).
+    
+```js
+var map = new Map([[NaN, 1], [Symbol(), 2]]);
+map.forEach((value, key) => console.log(key, value));
+// <- NaN 1
+// <- Symbol() 2
+```
+    
+__Note:__ Map's entries are always iterated in insertion order!
+This is in contrast with `Object.keys` or `for..in` loops which follow an arbitrary order.
+    
+---
+    
+# Maps (6/6).
+    
+Just like `.entries()`, Map has two other iterators you can leverage.
+- Method `.keys()` to get the list of keys.
+- Method `.values()` to get the list of values.
+    
+```js
+var m = new Map();
+var x = { id: 1 },
+    y = { id: 2 };
+
+m.set(x, "foo");
+m.set(y, "bar");
+
+var keys = [...m.keys()];
+var vals = [...m.values()];
+
+keys[0] === x;       // true
+keys[1] === y;       // true
+vals[0] === "foo";   // true
+vals[1] === "bar";   // true
+```
+    
+---
+    
+# WeakMaps.
+    
 
 ---
 class: center, middle, inverse
