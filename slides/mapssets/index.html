@@ -191,8 +191,61 @@ vals[1] === "bar";   // true
     
 ---
     
-# WeakMaps.
+# WeakMaps (1/2).
+
+`WeakMap` holds references to its keys weakly, meaning that if there are no other references to one of its keys,
+the object is subject to garbage collection.
+
+Keeping data about DOM elements that should be released from memory
+when they're no longer of interest is very important use case of `WeakMap`.
+If you have DOM elements as keys in a normal `Map`, the DOM elements don't get released from memory because
+the `Map` still keeps references to them.
     
+There are a few limitations on `WeakMap` in comparison to `Map`.
+- `WeakMap` is not iterable. There are no `.entries()`, no `.keys()`, no `.values()`, no `.forEach()`.
+- There is no `.clear()`.
+- There is no `.size()`.
+- Every key must be an object.
+    
+```js
+var map = new WeakMap();
+map.set(1, 2);   // TypeError: 1 is not an object!  
+```
+    
+---
+    
+# WeakMaps (2/2).
+    
+You are still able to pass an iterable to populate a `WeakMap` through its constructor.
+    
+```js
+var map = new WeakMap([[new Date(), 'foo'], [() => 'bar', 'baz']]); 
+```
+    
+Just like with `Map`, you can use `.has()`, `.get()`, and `.delete()` too.
+    
+It's important to note that a `WeakMap` only holds its keys weakly, not its values.
+    
+```js
+var m = new WeakMap();
+var x = { id: 1 },
+    y = { id: 2 },
+    z = { id: 3 },
+    w = { id: 4 };
+
+m.set(x, y);
+
+x = null;   // {id: 1} is GC-eligible
+y = null;   // {id: 2} is GC-eligible only because {id: 1} is
+
+m.set(z, w);
+
+w = null;   // {id: 4} is not GC-eligible
+```
+    
+---
+    
+# Sets.
 
 ---
 class: center, middle, inverse
