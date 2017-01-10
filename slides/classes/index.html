@@ -339,7 +339,7 @@ donatello.health = 80;   // TypeError: Cannot set property health...
     
 ---
     
-# Static Methods (1/3).
+# Static methods (1/3).
     
 Adding additional methods directly onto constructors to simulate static members is a common pattern in ES5 and earlier.
     
@@ -363,7 +363,7 @@ var person = PersonType.create("Nicholas");
     
 ---
     
-# Static Methods (2/3).
+# Static methods (2/3).
     
 ES6 classes simplify the creation of static members by using the `static` annotation before the method or accessor property name.
     
@@ -387,7 +387,7 @@ let person = PersonClass.create("Nicholas");
     
 ---
     
-# Static Methods (3/3).
+# Static methods (3/3).
     
 One thing you can do in JavaScript but can't in Java: from the derived class you can override and call your parents static method.
     
@@ -409,7 +409,7 @@ Bar.classMethod();   // 'hello, too'
     
 ---
     
-# Static Fields.
+# Static fields.
     
 There are no static fields in ES6, but there is a discussion about it for ES7.
 Right now you can simulate the functionality like this:
