@@ -245,7 +245,107 @@ w = null;   // {id: 4} is not GC-eligible
     
 ---
     
-# Sets.
+# Sets (1/3).
+    
+A set is a collection of unique values (duplicates are ignored).
+    
+The API for a set is similar to map. `The add(...)` method takes the place of the `set(...)` method, and there is no `get(...)` method.
+    
+```js
+var s = new Set();
+var x = { id: 1 },
+    y = { id: 2 };
+
+s.add(x);
+s.add(y);
+s.add(x);
+
+s.size;       // 2
+
+s.delete(y);
+s.size;       // 1
+s.has(y);     // false
+
+s.clear();
+s.size;       // 0
+```
+    
+---
+    
+# Sets (2/3).
+    
+The `Set(...)` constructor form is similar to `Map(...)`, in that it can receive an iterable,
+like another set or simply an array of values. However, unlike `Map(...)` which expects entries list (array of key/value arrays),
+`Set(...)` expects a values list (array of values):
+    
+```js
+var x = { id: 1 },
+    y = { id: 2 };
+
+var s = new Set([x, y]);
+```
+    
+Sets have the same iterator methods as maps.
+The `keys()` and `values()` iterators both yield a list of the unique values in the set. The `entries()` iterator
+yields a list of items like `[value, value]`. The default iterator for a set is its `values()` iterator.
+    
+```js
+set[Symbol.iterator] === set.values  // true
+    
+set.keys === set.values              // true
+```
+    
+---
+    
+# Sets (3/3).
+    
+```js
+var s = new Set();
+var x = { id: 1 },
+    y = { id: 2 };
+
+s.add(x).add(y);
+
+var keys = [...s.keys()],
+    vals = [...s.values()];
+
+keys[0] === x;
+keys[1] === y;
+vals[0] === x;
+vals[1] === y; 
+```
+    
+The following piece of code creates a `Set` with all the `div` elements on a page.
+    
+```js
+function divs () {
+  return [...document.querySelectorAll('div')];
+}
+    
+var set = new Set(divs());
+```
+    
+---
+    
+# WeakSets.
+    
+WeakSet holds its values weakly (there aren't really keys).
+    
+```js
+var s = new WeakSet();
+var x = { id: 1 },
+    y = { id: 2 };
+
+s.add(x);
+s.add(y);
+
+x = null;   // x is GC-eligible
+y = null;   // y is GC-eligible 
+```
+    
+__Important:__
+- `WeakSet` values must be objects, not primitive values as it is allowed with Sets.
+- You can't iterate over `WeakSet`. Like in `WeakMap`, you can only use `.add()`, `.has()`, and `.delete()`.
 
 ---
 class: center, middle, inverse
